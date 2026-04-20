@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Helvetica', sans-serif; background-color: #f4f4f4; color: #333; padding: 20px; }
+        .quiz-container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #1a1a1a; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .question { margin-bottom: 25px; display: none; }
+        .question.active { display: block; }
+        .scenario { font-style: italic; color: #666; margin-bottom: 15px; }
+        .options button { display: block; width: 100%; text-align: left; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 6px; background: white; cursor: pointer; transition: 0.3s; }
+        .options button:hover { background: #f0f0f0; border-color: #333; }
+        .btn-start { background: #333; color: white; padding: 15px 30px; border: none; border-radius: 6px; cursor: pointer; font-size: 18px; }
+        .result-page { display: none; text-align: center; }
+        .result-title { font-size: 24px; font-weight: bold; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz-box">
+    <div id="intro">
+        <h2>THE MIRROR SCAN</h2>
+        <p>This is a conscience check-up. Adult life is coming. Are you building with premium materials or taking shortcuts?</p>
+        <button class="btn-start" onclick="startQuiz()">Start Test</button>
+    </div>
+
+    <div id="q1" class="question">
+        <h3>1. The Exam</h3>
+        <p class="scenario">The teacher leaves the room for 15 minutes during a hard test. Everyone starts sharing answers.</p>
+        <div class="options">
+            <button onclick="next(1, 2)">A. I stay focused. My knowledge is a premium asset.</button>
+            <button onclick="next(1, 1)">B. I check a couple of answers just to be sure.</button>
+            <button onclick="next(1, 0)">C. I copy everything. A 5.0 is a 5.0.</button>
+        </div>
+    </div>
+
+    <div id="q2" class="question">
+        <h3>2. The "Unfriendly" Classmate</h3>
+        <p class="scenario">A classmate you don't like is being treated unfairly by a group.</p>
+        <div class="options">
+            <button onclick="next(2, 2)">A. I speak up. High-quality people respect everyone.</button>
+            <button onclick="next(2, 1)">B. I stay quiet, though I feel a bit bad.</button>
+            <button onclick="next(2, 0)">C. I laugh or join in. It’s "karma."</button>
+        </div>
+    </div>
+
+    <div id="q3" class="question">
+        <h3>3. The Group Error</h3>
+        <p class="scenario">You notice a mistake in a project 5 min before handing it in. It was your fault.</p>
+        <div class="options">
+            <button onclick="next(3, 2)">A. I admit it immediately and try to fix it.</button>
+            <button onclick="next(3, 1)">B. I fix it quietly without telling anyone it was me.</button>
+            <button onclick="next(3, 0)">C. I say nothing. I'll blame the teacher later.</button>
+        </div>
+    </div>
+
+    <div id="q4" class="question">
+        <h3>4. AI vs. Learning</h3>
+        <p class="scenario">You have a complex essay. You can use AI to do 100% of the work.</p>
+        <div class="options">
+            <button onclick="next(4, 2)">A. I use it for ideas, but I write it. I want the knowledge.</button>
+            <button onclick="next(4, 1)">B. I let AI do it and change some words to not get caught.</button>
+            <button onclick="next(4, 0)">C. Copy, paste, submit. I'm just here for the degree.</button>
+        </div>
+    </div>
+
+    <div id="q5" class="question">
+        <h3>5. The Gossip</h3>
+        <p class="scenario">Your friends are destroying someone's reputation with a rumor.</p>
+        <div class="options">
+            <button onclick="next(5, 2)">A. I stop the conversation. I don't build status by breaking others.</button>
+            <button onclick="next(5, 1)">B. I listen but say nothing to stay in the group.</button>
+            <button onclick="next(5, 0)">C. I add more "tea" to the gossip. Information is power.</button>
+        </div>
+    </div>
+
+    <div id="q6" class="question">
+        <h3>6. Quality Control</h3>
+        <p class="scenario">A classmate asks for feedback. Their work is poor and they will fail.</p>
+        <div class="options">
+            <button onclick="next(6, 2)">A. I give honest feedback to help them improve.</button>
+            <button onclick="next(6, 1)">B. I tell them it’s "fine" to avoid being awkward.</button>
+            <button onclick="next(6, 0)">C. I say nothing. Every contractor for himself.</button>
+        </div>
+    </div>
+
+    <div id="q7" class="question">
+        <h3>7. Infrastructure</h3>
+        <p class="scenario">You see someone damaging school property (laptops/furniture) for fun.</p>
+        <div class="options">
+            <button onclick="next(7, 2)">A. I report it. Community resources are the foundation.</button>
+            <button onclick="next(7, 1)">B. I walk away. Not my stuff, not my problem.</button>
+            <button onclick="next(7, 0)">C. I join in. The school can buy more.</button>
+        </div>
+    </div>
+
+    <div id="results" class="result-page">
+        <div id="result-title" class="result-title"></div>
+        <p id="result-desc"></p>
+        <button class="btn-start" onclick="location.reload()">Restart Test</button>
+    </div>
+</div>
+
+<script>
+    let totalScore = 0;
+    function startQuiz() {
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('q1').classList.add('active');
+    }
+
+    function next(currentQ, points) {
+        totalScore += points;
+        document.getElementById('q' + currentQ).classList.remove('active');
+        if (currentQ < 7) {
+            document.getElementById('q' + (currentQ + 1)).classList.add('active');
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('results').style.display = 'block';
+        let title = "";
+        let desc = "";
+
+        if (totalScore >= 11) {
+            title = "PREMIUM ARCHITECT";
+            desc = "Your life is being built on the rock of integrity.\n\nYou understand that character is the most important specification of any project. By choosing truth over shortcuts and dignity over popularity, you are using premium spiritual materials. In the business of life, you are becoming a leader who values stewardship and the common good. Remember: a structure is only as grand as the virtues of its creator. You are ready to build a future that won't just stand, but will inspire others.";
+        } else if (totalScore >= 6) {
+            title = "UNDER CONSTRUCTION";
+            desc = "Good blueprints, but the materials need reinforcement.\n\nYou have a good heart and clear intentions, but you are occasionally using \"budget materials\" (shortcuts) to avoid pressure. Sometimes you choose silence over justice or comfort over truth. An adult life built on convenience is a life built on sand; it might look good now, but it will crack under the weight of real responsibility. It is time to reinforce your foundation with courage and consistent values.";
+        } else {
+            title = "STRUCTURAL FAILURE";
+            desc = "Warning: A life built on shortcuts is a house built on sand.\n\nYou are currently prioritizing the \"easy way\" over the \"right way.\" By choosing ego, dishonesty, or indifference, you are compromising the structural integrity of the person you are meant to be. Success is not just about the final grade or the money; it’s about the quality of the soul behind the work. It is not too late to reset your specifications. Start building with truth and respect today before the real world tests your foundation.";
+        }
+
+        document.getElementById('result-title').innerText = title;
+        document.getElementById('result-desc').innerText = desc + " (Total Score: " + totalScore + "/14)";
+    }
+</script>
+
+</body>
+</html>
